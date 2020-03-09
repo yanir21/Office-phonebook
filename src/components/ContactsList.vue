@@ -10,7 +10,7 @@
 				@click="$emit('contact-clicked')"
 			>
 				<v-list-item-avatar>
-					<v-img :src="item.avatar"></v-img>
+					<v-img src="https://cdn.vuetifyjs.com/images/lists/1.jpg"></v-img>
 				</v-list-item-avatar>
 
 				<v-list-item-content>
@@ -29,7 +29,7 @@ export default {
 	apollo: {
 		list: gql`
 			{
-				list:contacts {
+				list: contacts {
 					first_name
 					last_name
 					phones {
@@ -41,24 +41,18 @@ export default {
 	},
 	data() {
 		return {
-			list: [
-				{
-					name: 'נדב',
-					avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-					number: '031564892'
-				},
-				{
-					name: 'חצב',
-					avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-					number: '031564892'
-				}
-			],
+			list: [],
 			search: ''
 		};
 	},
 	computed: {
+		fullNameList() {
+			return this.list.map(contact => {
+				return { name: contact.first_name + ' ' + contact.last_name };
+			});
+		},
 		filteredContacts() {
-			return this.list.filter(contact => contact.first_name.includes(this.search));
+			return this.fullNameList.filter(contact => contact.name.includes(this.search));
 		}
 	}
 };
