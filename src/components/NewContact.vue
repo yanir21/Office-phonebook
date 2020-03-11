@@ -14,7 +14,7 @@
 									alt=""
 								/>
 							</v-avatar>
-							<v-text-field placeholder="שם מלא" />
+							<v-text-field placeholder="שם מלא" v-model="fullname" />
 						</v-row>
 					</v-col>
 					<v-col cols="6">
@@ -23,7 +23,7 @@
 							placeholder="חברה"
 						/>
 					</v-col>
-				
+
 					<v-col cols="12">
 						<v-text-field prepend-icon="mdi-mail" placeholder="מייל" />
 					</v-col>
@@ -40,16 +40,21 @@
 				</v-row>
 			</v-container>
 			<v-card-actions>
-			
 				<v-spacer />
 				<v-btn text color="primary" @click="show = false">Cancel</v-btn>
-				<v-btn text @click="show = false">Save</v-btn>
+				<v-btn text @click="saveContact">Save</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 <script>
+import { insertContact } from '@/queries/AddContact.js';
 export default {
+	data() {
+		return {
+			fullname: ''
+		};
+	},
 	props: {
 		dialog: {
 			required: true
@@ -68,6 +73,16 @@ export default {
 	methods: {
 		closeModal() {
 			this.$emit('closed');
+		},
+		saveContact() {
+			this.$apollo.mutate({
+				mutation: insertContact,
+				variables: {
+					first_name: this.fullname,
+					last_name: this.fullname
+				}
+			});
+			this.show = false;
 		}
 	}
 };
