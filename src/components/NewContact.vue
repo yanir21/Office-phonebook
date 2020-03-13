@@ -14,7 +14,7 @@
 									alt=""
 								/>
 							</v-avatar>
-							<v-text-field placeholder="שם מלא" v-model="fullname" />
+							<v-text-field placeholder="שם מלא" v-model="fullName" />
 						</v-row>
 					</v-col>
 					<v-col cols="6">
@@ -52,7 +52,10 @@ import { insertContact } from '@/queries/AddContact.js';
 export default {
 	data() {
 		return {
-			fullname: ''
+			fullName: '',
+			email: '',
+			company: '',
+			memo: ''
 		};
 	},
 	props: {
@@ -75,14 +78,24 @@ export default {
 			this.$emit('closed');
 		},
 		saveContact() {
+			const name = this.getFullNameSeperated();
 			this.$apollo.mutate({
 				mutation: insertContact,
 				variables: {
-					first_name: this.fullname,
-					last_name: this.fullname
+					first_name: name.firstName,
+					last_name: name.lastName,
+					company: this.company,
+					email: this.email,
+					memo: this.memo
 				}
 			});
 			this.show = false;
+		},
+		getFullNameSeperated() {
+			const fullNameArray = this.fullName.split(' ');
+			let [firstName, ...lastName] = fullNameArray;
+			lastName = lastName.join(' ');
+			return { firstName, lastName };
 		}
 	}
 };

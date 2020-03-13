@@ -24,20 +24,10 @@
 	</v-card>
 </template>
 <script>
-import gql from 'graphql-tag';
+import { getAllContacts } from '@/queries/getAllContacts.js';
 export default {
 	apollo: {
-		list: gql`
-			{
-				list: contacts {
-					first_name
-					last_name
-					phones {
-						number
-					}
-				}
-			}
-		`
+		list: getAllContacts
 	},
 	data() {
 		return {
@@ -48,11 +38,18 @@ export default {
 	computed: {
 		fullNameList() {
 			return this.list.map(contact => {
-				return { name: contact.first_name + ' ' + contact.last_name };
+				return {
+					name: contact.first_name + ' ' + (contact.last_name ? contact.last_name : '')
+				};
 			});
 		},
 		filteredContacts() {
 			return this.fullNameList.filter(contact => contact.name.includes(this.search));
+		}
+	},
+	methods: {
+		seperateName() {
+			// let fullName = this.fullName;
 		}
 	}
 };
