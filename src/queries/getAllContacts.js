@@ -4,7 +4,10 @@ export const getAllContacts = gql`
 		list: contacts(order_by: { first_name: asc }) {
 			first_name
 			last_name
-			phones {
+			email
+			company
+			memo
+			numbers: phones {
 				number
 			}
 		}

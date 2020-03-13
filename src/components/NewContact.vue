@@ -21,21 +21,24 @@
 						<v-text-field
 							prepend-icon="mdi-account-card-details-outline"
 							placeholder="חברה"
+							v-model="company"
 						/>
 					</v-col>
 
 					<v-col cols="12">
-						<v-text-field prepend-icon="mdi-mail" placeholder="מייל" />
+						<v-text-field prepend-icon="mdi-mail" placeholder="מייל" v-model="email" />
 					</v-col>
 					<v-col cols="12">
 						<v-text-field
 							type="tel"
 							prepend-icon="mdi-phone"
-							placeholder="(000) 000 - 0000"
+							v-model="phone"
+							v-mask="mask"
+							placeholder="000-0000000"
 						/>
 					</v-col>
 					<v-col cols="12">
-						<v-text-field prepend-icon="mdi-text" placeholder="הערות" />
+						<v-text-field prepend-icon="mdi-text" placeholder="הערות" v-model="memo" />
 					</v-col>
 				</v-row>
 			</v-container>
@@ -48,6 +51,7 @@
 	</v-dialog>
 </template>
 <script>
+import { mask } from 'vue-the-mask';
 import { insertContact } from '@/queries/AddContact.js';
 export default {
 	data() {
@@ -55,8 +59,13 @@ export default {
 			fullName: '',
 			email: '',
 			company: '',
-			memo: ''
+			memo: '',
+			phone: '',
+			mask: '###-#######'
 		};
+	},
+	directives: {
+		mask
 	},
 	props: {
 		dialog: {
