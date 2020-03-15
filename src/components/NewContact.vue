@@ -28,14 +28,22 @@
 					<v-col cols="12">
 						<v-text-field prepend-icon="mdi-mail" placeholder="מייל" v-model="email" />
 					</v-col>
-					<v-col cols="12">
+					<v-col cols="8" v-for="(phone, index) in phones" :key="index">
 						<v-text-field
 							type="tel"
 							prepend-icon="mdi-phone"
-							v-model="phone"
+							:append-icon="iconToAppend(index)"
+							@click:append="deletePhone(index)"
+							@input="updatePhone($event, index)"
 							v-mask="mask"
 							placeholder="000-0000000"
 						/>
+					</v-col>
+
+					<v-col id="addPhoneButton">
+						<v-btn icon color="green" @click="addPhone">
+							<v-icon>mdi-plus</v-icon>
+						</v-btn>
 					</v-col>
 					<v-col cols="12">
 						<v-text-field prepend-icon="mdi-text" placeholder="הערות" v-model="memo" />
@@ -60,7 +68,7 @@ export default {
 			email: '',
 			company: '',
 			memo: '',
-			phone: '',
+			phones: [''],
 			mask: '###-#######'
 		};
 	},
@@ -88,6 +96,11 @@ export default {
 		},
 		saveContact() {
 			const name = this.getFullNameSeperated();
+			console.log(
+				this.phones.map(phone => {
+					return { number: phone };
+				})
+			);
 			this.$apollo.mutate({
 				mutation: insertContact,
 				variables: {
@@ -95,7 +108,10 @@ export default {
 					last_name: name.lastName,
 					company: this.company,
 					email: this.email,
-					memo: this.memo
+					memo: this.memo,
+					phones: this.phones.map(phone => {
+						return { number: phone };
+					})
 				}
 			});
 			this.show = false;
@@ -105,7 +121,25 @@ export default {
 			let [firstName, ...lastName] = fullNameArray;
 			lastName = lastName.join(' ');
 			return { firstName, lastName };
+		},
+		updatePhone(number, index) {
+			this.phones[index] = number.replace('-', '');
+		},
+		addPhone() {
+			this.phones.push('');
+		},
+		deletePhone(index) {
+			console.log(index);
+			this.phones.splice(index, 1);
+		},
+		iconToAppend(index) {
+			return index > 0 && index === this.phones.length - 1 ? 'mdi-minus' : '';
 		}
 	}
 };
 </script>
+<style>
+#addPhoneButton {
+	margin-top: 1.8%;
+}
+</style>

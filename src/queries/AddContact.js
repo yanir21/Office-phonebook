@@ -6,6 +6,7 @@ export const insertContact = gql`
 		$company: String
 		$email: String
 		$memo: String
+		$phones: [phones_insert_input!]!
 	) {
 		insert_contacts(
 			objects: {
@@ -14,6 +15,7 @@ export const insertContact = gql`
 				company: $company
 				email: $email
 				memo: $memo
+				phones: { data: $phones }
 			}
 		) {
 			affected_rows
