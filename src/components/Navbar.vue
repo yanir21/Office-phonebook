@@ -1,13 +1,13 @@
 <template>
 	<div>
-        <v-app-bar :clipped-right="$vuetify.breakpoint.lgAndUp" app color="blue darken-3" dark>
+		<v-app-bar :clipped-right="$vuetify.breakpoint.lgAndUp" app color="blue darken-3" dark>
 			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 			<v-toolbar-title style="width: 300px" class="ml-0 pl-4">
 				<span class="hidden-sm-and-down">ספר טלפונים משרדי</span>
 			</v-toolbar-title>
 		</v-app-bar>
 		<v-navigation-drawer
-			:right=true
+			:right="true"
 			v-model="drawer"
 			:clipped="$vuetify.breakpoint.lgAndUp"
 			app
@@ -62,8 +62,6 @@
 				</template>
 			</v-list>
 		</v-navigation-drawer>
-
-		
 	</div>
 </template>
 
@@ -72,7 +70,7 @@ export default {
 	data() {
 		return {
 			drawer: false,
-			items: [{ icon: 'mdi-contacts', text: 'Contacts' }]
+			items: [{ icon: 'mdi-contacts', text: 'כל אנשי הקשר' }]
 		};
 	}
 };

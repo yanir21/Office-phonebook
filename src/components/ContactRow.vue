@@ -9,7 +9,12 @@
 					{{ fullName }}
 				</h3></v-list-item-title
 			>
-			<v-flex> {{ number }} {{ extraNumbers }} </v-flex> {{ company }}
+			<v-flex xs5>
+				<span class="phone">{{ number }}</span>
+				<span class="extraPhones"> {{ extraNumbers }}</span>
+			</v-flex>
+			<v-flex xs4>{{ company }}</v-flex>
+			<v-flex xs3>{{ mail }}</v-flex>
 		</v-list-item-content>
 	</v-list-item>
 </template>
@@ -35,13 +40,25 @@ export default {
 			const length = this.contact.numbers.length;
 			return this.contact.numbers[0] && length > 1
 				? length > 2
-					? ` + ${this.contact.numbers.length - 1} נוספים`
-					: ` + ${this.contact.numbers.length - 1} נוסף`
+					? `(+${this.contact.numbers.length - 1} נוספים)`
+					: `(+${this.contact.numbers.length - 1} נוסף)`
 				: '';
 		},
 		company() {
 			return this.contact.company ? ` ${this.contact.company}` : '';
+		},
+		mail() {
+			return this.contact.email ? this.contact.email : '';
 		}
 	}
 };
 </script>
+<style>
+.phone {
+	margin-left: 3%;
+}
+.extraPhones {
+	color: gray;
+	font-size: small;
+}
+</style>
