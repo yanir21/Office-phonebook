@@ -9,8 +9,7 @@
 					{{ fullName }}
 				</h3></v-list-item-title
 			>
-			{{ contact.numbers[0].number }}
-			{{ contact.company }}
+			<v-flex> {{ number }} {{ extraNumbers }} </v-flex> {{ company }}
 		</v-list-item-content>
 	</v-list-item>
 </template>
@@ -28,6 +27,20 @@ export default {
 				this.contact.first_name +
 				(this.contact.last_name ? ' ' + this.contact.last_name : '')
 			);
+		},
+		number() {
+			return this.contact.numbers[0] ? `${this.contact.numbers[0].number}` : '';
+		},
+		extraNumbers() {
+			const length = this.contact.numbers.length;
+			return this.contact.numbers[0] && length > 1
+				? length > 2
+					? ` + ${this.contact.numbers.length - 1} נוספים`
+					: ` + ${this.contact.numbers.length - 1} נוסף`
+				: '';
+		},
+		company() {
+			return this.contact.company ? ` ${this.contact.company}` : '';
 		}
 	}
 };
