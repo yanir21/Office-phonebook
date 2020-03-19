@@ -28,23 +28,57 @@
 					<v-col cols="12">
 						<v-text-field prepend-icon="mdi-mail" placeholder="מייל" v-model="email" />
 					</v-col>
-					<v-col cols="8" v-for="(phone, index) in phones" :key="index">
-						<v-text-field
-							type="tel"
-							prepend-icon="mdi-phone"
-							:append-icon="iconToAppend(index)"
-							@click:append="deletePhone(index)"
-							@input="updatePhone($event, index)"
-							v-mask="mask"
-							placeholder="000-0000000"
-						/>
-					</v-col>
+					<v-row v-for="(phone, index) in phones" :key="index">
+						<v-col cols="6">
+							<v-text-field
+								type="tel"
+								prepend-icon="mdi-phone"
+								@input="updatePhone($event, index)"
+								v-mask="mask"
+								placeholder="000-0000000"
+							/>
+						</v-col>
+						<v-col cols="3">
+							<v-text-field
+								cols="3"
+								@input="updatePhoneDesc($event, index)"
+								placeholder="תן שם למספר(אופציונלי)"
+							/>
+						</v-col>
+						<v-col cols="1" class="phoneActionButton">
+							<v-tooltip bottom>
+								<template v-slot:activator="{ on }">
+									<v-btn
+										icon
+										color="red"
+										v-on="on"
+										v-show="isLastPhone(index) && !isFirst(index)"
+										@click="deletePhone(index)"
+									>
+										<v-icon>mdi-minus</v-icon>
+									</v-btn>
+								</template>
+								<span>מחק מספר</span>
+							</v-tooltip>
+						</v-col>
+						<v-col cols="1" class="phoneActionButton">
+							<v-tooltip bottom>
+								<template v-slot:activator="{ on }">
+									<v-btn
+										icon
+										v-on="on"
+										color="green"
+										v-show="isLastPhone(index)"
+										@click="addPhone"
+									>
+										<v-icon>mdi-plus</v-icon>
+									</v-btn>
+								</template>
+								<span>הוסף מספר</span>
+							</v-tooltip>
+						</v-col>
+					</v-row>
 
-					<v-col id="addPhoneButton">
-						<v-btn icon color="green" @click="addPhone">
-							<v-icon>mdi-plus</v-icon>
-						</v-btn>
-					</v-col>
 					<v-col cols="12">
 						<v-text-field prepend-icon="mdi-text" placeholder="הערות" v-model="memo" />
 					</v-col>
@@ -52,8 +86,8 @@
 			</v-container>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn text color="primary" @click="show = false">Cancel</v-btn>
-				<v-btn text @click="saveContact">Save</v-btn>
+				<v-btn text color="primary" @click="show = false">ביטול</v-btn>
+				<v-btn text @click="saveContact">שמור</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -68,7 +102,7 @@ export default {
 			email: '',
 			company: '',
 			memo: '',
-			phones: [''],
+			phones: [{}],
 			mask: '###-#######'
 		};
 	},
@@ -96,11 +130,6 @@ export default {
 		},
 		saveContact() {
 			const name = this.getFullNameSeperated();
-			console.log(
-				this.phones.map(phone => {
-					return { number: phone };
-				})
-			);
 			this.$apollo.mutate({
 				mutation: insertContact,
 				variables: {
@@ -109,9 +138,7 @@ export default {
 					company: this.company,
 					email: this.email,
 					memo: this.memo,
-					phones: this.phones.map(phone => {
-						return { number: phone };
-					})
+					phones: this.phones
 				}
 			});
 			this.show = false;
@@ -123,23 +150,29 @@ export default {
 			return { firstName, lastName };
 		},
 		updatePhone(number, index) {
-			this.phones[index] = number.replace('-', '');
+			this.phones[index]['number'] = number.replace('-', '');
+		},
+		updatePhoneDesc(name, index) {
+			this.phones[index]['name'] = name;
 		},
 		addPhone() {
-			this.phones.push('');
+			this.phones.push({});
 		},
 		deletePhone(index) {
 			console.log(index);
 			this.phones.splice(index, 1);
 		},
-		iconToAppend(index) {
-			return index > 0 && index === this.phones.length - 1 ? 'mdi-minus' : '';
+		isLastPhone(index) {
+			return index === this.phones.length - 1;
+		},
+		isFirst(index) {
+			return index === 0;
 		}
 	}
 };
 </script>
 <style>
-#addPhoneButton {
+.phoneActionButton {
 	margin-top: 1.8%;
 }
 </style>

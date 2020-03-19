@@ -2,16 +2,14 @@
 	<div>
 		<v-content>
 			<v-container fluid>
-			
 				<contacts-list></contacts-list>
 			</v-container>
-			
 		</v-content>
-		
+
 		<v-btn bottom color="pink" dark fab fixed right @click="dialog = !dialog">
 			<v-icon>mdi-plus</v-icon>
 		</v-btn>
-		<new-contact :dialog='dialog' @closed='dialog = false'></new-contact>
+		<new-contact :dialog="dialog" @closed="dialog = false"></new-contact>
 	</div>
 </template>
 
@@ -22,13 +20,12 @@ export default {
 	props: {
 		source: String
 	},
-	components:{
-		'new-contact':NewContact,
-		'contacts-list':ContactsList
+	components: {
+		'new-contact': NewContact,
+		'contacts-list': ContactsList
 	},
 	data: () => ({
-		dialog: false,
-
+		dialog: false
 	})
 };
 </script>
