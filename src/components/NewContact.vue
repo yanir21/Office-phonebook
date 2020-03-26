@@ -95,6 +95,7 @@
 <script>
 import { mask } from 'vue-the-mask';
 import { insertContact } from '@/queries/AddContact.js';
+import { getAllContacts } from '@/queries/getAllContacts.js';
 export default {
 	data() {
 		return {
@@ -131,6 +132,7 @@ export default {
 		saveContact() {
 			const name = this.getFullNameSeperated();
 			this.$apollo.mutate({
+				refetchQueries: [{ query: getAllContacts }],
 				mutation: insertContact,
 				variables: {
 					first_name: name.firstName,
@@ -138,7 +140,7 @@ export default {
 					company: this.company,
 					email: this.email,
 					memo: this.memo,
-					phones: this.phones
+					phones: this.phones.filter(phone => phone.number.length)
 				}
 			});
 			this.show = false;
@@ -159,7 +161,6 @@ export default {
 			this.phones.push({});
 		},
 		deletePhone(index) {
-			console.log(index);
 			this.phones.splice(index, 1);
 		},
 		isLastPhone(index) {

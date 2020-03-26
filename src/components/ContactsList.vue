@@ -3,7 +3,7 @@
 		<v-flex class="d-flex pa-3">
 			<v-text-field v-model="search" label="חפש בן אדם ספציפי..."></v-text-field>
 		</v-flex>
-		<v-list>
+		<v-list id="contactList" max-height="570">
 			<v-list-item-group color="primary">
 				<contact-row
 					v-for="contact in filteredContacts"
@@ -14,50 +14,50 @@
 			</v-list-item-group>
 		</v-list>
 		<v-dialog v-model="dialog" width="500">
-			<v-card>
-				<v-card-title class="headline grey lighten-2" primary-title>
-					עוד קצת על אדיר ויצמן
-				</v-card-title>
-
-				<v-card-text>שם: </v-card-text>
-
-				<v-divider></v-divider>
-
-				<v-card-actions>
-					<v-spacer></v-spacer>
-					<v-btn color="primary" text @click="dialog = false">
-						הבנתי...
-					</v-btn>
-				</v-card-actions>
-			</v-card>
+			<contact-details-modal
+				:contact="chosenContact"
+				@closeModal="dialog = false"
+			></contact-details-modal>
 		</v-dialog>
 	</v-card>
 </template>
 <script>
 import { getAllContacts } from '@/queries/getAllContacts.js';
 import ContactRow from '@/components/ContactRow.vue';
+import ContactDetailsModal from '@/components/ContactDetailsModal.vue';
 export default {
 	apollo: {
 		list: getAllContacts
 	},
 	components: {
-		'contact-row': ContactRow
+		'contact-row': ContactRow,
+		'contact-details-modal': ContactDetailsModal
 	},
 	data() {
 		return {
 			list: [],
 			search: '',
-			dialog: false
+			dialog: false,
+			chosenContact: {}
 		};
 	},
 	computed: {
 		filteredContacts() {
-			return this.list.filter(contact => contact.first_name.includes(this.search));
+			const fields = [];
+			const search = this.search;
+			if (this.list[0]) {
+				fields.push(...Object.keys(this.list[0]));
+				return this.list.filter(contact =>
+					fields.some(field => String(contact[field]).includes(search))
+				);
+			}
+			return [];
 		}
 	},
 	methods: {
-		showContact() {
+		showContact(contact) {
 			this.dialog = true;
+			this.chosenContact = contact;
 		}
 	}
 };
@@ -65,5 +65,9 @@ export default {
 <style>
 #searchBar {
 	width: 40%;
+}
+#contactList {
+	/* overflow: hidden; */
+	overflow-y: scroll;
 }
 </style>

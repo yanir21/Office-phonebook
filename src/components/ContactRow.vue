@@ -11,7 +11,7 @@
 			>
 			<v-flex xs5>
 				<span class="phone">{{ number }}</span>
-				<span class="extraPhones"> {{ extraNumbers }}</span>
+				<span class="extraPhones"> {{ extraphones }}</span>
 			</v-flex>
 			<v-flex xs4>{{ company }}</v-flex>
 			<v-flex xs3>{{ mail }}</v-flex>
@@ -34,14 +34,14 @@ export default {
 			);
 		},
 		number() {
-			return this.contact.numbers[0] ? `${this.contact.numbers[0].number}` : '';
+			return this.contact.phones[0] ? `${this.contact.phones[0].number}` : '';
 		},
-		extraNumbers() {
-			const length = this.contact.numbers.length;
-			return this.contact.numbers[0] && length > 1
+		extraphones() {
+			const length = this.contact.phones.length;
+			return this.contact.phones[0] && length > 1
 				? length > 2
-					? `(+${this.contact.numbers.length - 1} נוספים)`
-					: `(+${this.contact.numbers.length - 1} נוסף)`
+					? `(+${this.contact.phones.length - 1} נוספים)`
+					: `(+${this.contact.phones.length - 1} נוסף)`
 				: '';
 		},
 		company() {
