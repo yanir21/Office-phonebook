@@ -1,19 +1,19 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
 import vuetify from './plugins/vuetify';
-import { createProvider } from './vue-apollo'
+import { apolloProvider } from './vue-apollo';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
-  router,
-  vuetify,
+	router,
+	vuetify,
 
-  mounted() {
-    this.$vuetify.rtl = true;
-},
+	mounted() {
+		this.$vuetify.rtl = true;
+	},
 
-  apolloProvider: createProvider(),
-  render: h => h(App)
-}).$mount('#app')
+	apolloProvider,
+	render: h => h(App)
+}).$mount('#app');
