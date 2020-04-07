@@ -56,6 +56,9 @@
 				<v-btn color="error" text @click="deleteContact(contact.id)">
 					מחק
 				</v-btn>
+				<v-btn color="primary" text @click="$emit('editMode')">
+					ערוך
+				</v-btn>
 				<v-spacer></v-spacer>
 				<v-btn color="primary" text @click="$emit('closeModal')">
 					סגור

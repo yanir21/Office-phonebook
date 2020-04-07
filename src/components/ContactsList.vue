@@ -1,5 +1,5 @@
 <template>
-	<v-card max-width="900" class="mx-auto">
+	<v-card max-width="900" class="mx-auto rounded-card">
 		<v-flex class="d-flex pa-3">
 			<v-text-field v-model="search" label="חפש בן אדם ספציפי..."></v-text-field>
 		</v-flex>
@@ -13,31 +13,44 @@
 				></contact-row>
 			</v-list-item-group>
 		</v-list>
-		<v-dialog v-model="dialog" width="500">
+		<v-dialog v-model="showContactInfo" width="500">
 			<contact-details-modal
 				:contact="chosenContact"
-				@closeModal="dialog = false"
+				@closeModal="showContactInfo = false"
+				@editMode="enterEditMode"
 			></contact-details-modal>
+		</v-dialog>
+		<v-dialog v-model="showContactEdit" width="700">
+			<edit-contact-modal
+				:contact="chosenContact"
+				@closeModal="showContactEdit = false"
+				@cancelEditing="cancelEdit"
+				@finishedEditing="finishEdit"
+			></edit-contact-modal>
 		</v-dialog>
 	</v-card>
 </template>
 <script>
+import Swal from 'sweetalert2';
 import { getAllContacts } from '@/queries/getAllContacts.js';
 import ContactRow from '@/components/ContactRow.vue';
 import ContactDetailsModal from '@/components/ContactDetailsModal.vue';
+import EditContactModal from '@/components/EditContactModal.vue';
 export default {
 	apollo: {
 		list: getAllContacts
 	},
 	components: {
 		'contact-row': ContactRow,
-		'contact-details-modal': ContactDetailsModal
+		'contact-details-modal': ContactDetailsModal,
+		'edit-contact-modal': EditContactModal
 	},
 	data() {
 		return {
 			list: [],
 			search: '',
-			dialog: false,
+			showContactInfo: false,
+			showContactEdit: false,
 			chosenContact: {}
 		};
 	},
@@ -56,8 +69,20 @@ export default {
 	},
 	methods: {
 		showContact(contact) {
-			this.dialog = true;
+			this.showContactInfo = true;
 			this.chosenContact = contact;
+		},
+		enterEditMode() {
+			this.showContactInfo = false;
+			this.showContactEdit = true;
+		},
+		cancelEdit() {
+			this.showContactEdit = false;
+			this.showContactInfo = true;
+		},
+		finishEdit() {
+			this.showContactEdit = false;
+			Swal.fire('!יש', 'איש הקשר נמחק בהצלחה', 'success');
 		}
 	}
 };
@@ -67,7 +92,6 @@ export default {
 	width: 40%;
 }
 #contactList {
-	/* overflow: hidden; */
 	overflow-y: scroll;
 }
 </style>
