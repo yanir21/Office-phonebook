@@ -192,19 +192,24 @@ export default {
 						contact_id: id
 					};
 				});
-			await this.$apollo.mutate({
-				refetchQueries: [{ query: getAllContacts }],
-				mutation: updateContact,
-				variables: {
-					id: id,
-					first_name: contact.first_name,
-					last_name: contact.last_name,
-					company: contact.company,
-					email: contact.email,
-					memo: contact.memo,
-					phones: phones
-				}
-			});
+			try {
+				await this.$apollo.mutate({
+					refetchQueries: [{ query: getAllContacts }],
+					mutation: updateContact,
+					variables: {
+						id: id,
+						first_name: contact.first_name,
+						last_name: contact.last_name,
+						company: contact.company,
+						email: contact.email,
+						memo: contact.memo,
+						phones: phones
+					}
+				});
+			} catch (err) {
+				console.log(err);
+				Swal.fire('!אופס', '....הייתה בעיה בהתחברות לשרת', 'error');
+			}
 			this.$emit('finishedEditing');
 		}
 	}
