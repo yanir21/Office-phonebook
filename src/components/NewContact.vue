@@ -93,9 +93,12 @@
 	</v-dialog>
 </template>
 <script>
+import Swal from 'sweetalert2';
 import { mask } from 'vue-the-mask';
 import { insertContact } from '@/queries/AddContact.js';
 import { getAllContacts } from '@/queries/getAllContacts.js';
+import { getContact } from '@/queries/getContact.js';
+import { deleteContact } from '@/queries/deleteContact.js';
 export default {
 	data() {
 		return {
@@ -129,21 +132,31 @@ export default {
 		closeModal() {
 			this.$emit('closed');
 		},
-		saveContact() {
+		async saveContact() {
 			const name = this.getFullNameSeperated();
-			this.$apollo.mutate({
-				refetchQueries: [{ query: getAllContacts }],
-				mutation: insertContact,
-				variables: {
-					first_name: name.firstName,
-					last_name: name.lastName,
-					company: this.company,
-					email: this.email,
-					memo: this.memo,
-					phones: this.phones.filter(phone => phone.number.length)
+			const contact = this;
+			if (await this.doesContactExists(name)) {
+				try {
+					await this.$apollo.mutate({
+						refetchQueries: [{ query: getAllContacts }],
+						mutation: insertContact,
+						variables: {
+							first_name: name.firstName,
+							last_name: name.lastName,
+							company: contact.company,
+							email: contact.email,
+							memo: contact.memo,
+							phones: contact.phones.filter(phone => phone.number)
+						}
+					});
+					Swal.fire('!יש', 'איש הקשר נוסף בהצלחה', 'success');
+				} catch (err) {
+					console.log(err);
+					Swal.fire('!אופס', '....הייתה בעיה בהתחברות לשרת', 'error');
 				}
-			});
-			this.show = false;
+
+				this.show = false;
+			}
 		},
 		getFullNameSeperated() {
 			const fullNameArray = this.fullName.split(' ');
@@ -168,6 +181,43 @@ export default {
 		},
 		isFirst(index) {
 			return index === 0;
+		},
+		async doesContactExists(name) {
+			let shouldOverride = true;
+			const data = (
+				await this.$apollo.query({
+					query: getContact,
+					variables: {
+						first_name: name.firstName,
+						last_name: name.lastName
+					}
+				})
+			).data.contacts;
+			if (data.length) {
+				await Swal.fire({
+					title: '...רגע רגע',
+					text: 'קיים כבר איש קשר בשם הזה, שנוצר ב' + data[0].created_at.substr(0, 10),
+					icon: 'info',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					cancelButtonText: 'חזור לערוך',
+					confirmButtonText: 'דרוס את הנתונים הקיימים'
+				}).then(async result => {
+					if (!result.value) {
+						shouldOverride = false;
+					} else {
+						await this.$apollo.mutate({
+							mutation: deleteContact,
+							variables: {
+								id: data[0].id
+							}
+						});
+					}
+				});
+			}
+
+			return shouldOverride;
 		}
 	}
 };

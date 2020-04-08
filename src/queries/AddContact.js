@@ -17,6 +17,10 @@ export const insertContact = gql`
 				memo: $memo
 				phones: { data: $phones }
 			}
+			on_conflict: {
+				constraint: contacts_first_name_last_name_key
+				update_columns: [email, company, memo, created_at]
+			}
 		) {
 			affected_rows
 		}

@@ -82,7 +82,7 @@ export default {
 		},
 		finishEdit() {
 			this.showContactEdit = false;
-			Swal.fire('!יש', 'איש הקשר נמחק בהצלחה', 'success');
+			Swal.fire('!יש', 'איש הקשר עודכן בהצלחה', 'success');
 		}
 	}
 };
