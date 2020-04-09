@@ -18,7 +18,10 @@
 				</v-row>
 				<v-row>
 					<v-col cols="5">
-						<v-text-field v-model="contactCopy.company"></v-text-field>
+						<v-text-field
+							placeholder="חברה..."
+							v-model="contactCopy.company"
+						></v-text-field>
 					</v-col>
 				</v-row>
 				<v-row>
@@ -26,7 +29,10 @@
 						<v-icon>mdi-email</v-icon>
 					</v-col>
 					<v-col cols="5">
-						<v-text-field v-model="contactCopy.email"></v-text-field>
+						<v-text-field
+							placeholder="מייל..."
+							v-model="contactCopy.email"
+						></v-text-field>
 					</v-col>
 				</v-row>
 				<v-row v-for="(phone, index) in contactCopy.phones" :key="index">

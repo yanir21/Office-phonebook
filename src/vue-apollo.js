@@ -63,7 +63,7 @@ export const apolloProvider = new VueApollo({
 			error.message
 		);
 		this.$router.push({
-			name: 'ServerErrorPage',
+			name: 'serverErrorPage',
 			params: {
 				errorMessage: encodeURIComponent(error.message)
 			}

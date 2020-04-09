@@ -2,6 +2,11 @@
 	<v-card max-width="900" class="mx-auto rounded-card">
 		<v-flex class="d-flex pa-3">
 			<v-text-field v-model="search" label="חפש בן אדם ספציפי..."></v-text-field>
+			<v-progress-circular
+				v-if="filteredContacts.length <= 0"
+				indeterminate
+				color="primary"
+			></v-progress-circular>
 		</v-flex>
 		<v-list id="contactList" max-height="570">
 			<v-list-item-group color="primary">

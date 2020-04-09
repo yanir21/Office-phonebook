@@ -21,7 +21,7 @@
 						<h3>{{ contact.company }}</h3></v-col
 					>
 				</v-row>
-				<v-row>
+				<v-row v-if="contact.email">
 					<v-col cols="2">
 						<v-icon>mdi-email</v-icon>
 					</v-col>

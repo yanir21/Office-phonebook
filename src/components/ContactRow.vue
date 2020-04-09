@@ -14,12 +14,16 @@
 				<span class="extraPhones"> {{ extraphones }}</span>
 			</v-flex>
 			<v-flex xs4>{{ company }}</v-flex>
-			<v-flex xs3>{{ mail }}</v-flex>
+			<v-flex xs1>{{ mail }}</v-flex>
+			<v-flex xs1><v-icon @click="deleteContact">mdi-trash-can-outline</v-icon></v-flex>
 		</v-list-item-content>
 	</v-list-item>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+import { getAllContacts } from '../queries/getAllContacts';
+import { deleteContact } from '../queries/deleteContact';
 export default {
 	props: {
 		contact: {
@@ -49,6 +53,33 @@ export default {
 		},
 		mail() {
 			return this.contact.email ? this.contact.email : '';
+		}
+	},
+	methods: {
+		deleteContact() {
+			const id = this.contact.id;
+			Swal.fire({
+				title: '?רגע רגע... אתה בטוח',
+				text: 'איש הקשר יימחק לצמיתות',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				cancelButtonText: 'עזוב התחרטתי',
+				confirmButtonText: 'יאללה תמחק'
+			}).then(async result => {
+				if (result.value) {
+					await this.$apollo.mutate({
+						refetchQueries: [{ query: getAllContacts }],
+						mutation: deleteContact,
+						variables: {
+							id: id
+						}
+					});
+					Swal.fire('!יש', 'איש הקשר נמחק בהצלחה', 'success');
+					this.$emit('closeModal');
+				}
+			});
 		}
 	}
 };
