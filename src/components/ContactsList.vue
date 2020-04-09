@@ -1,9 +1,13 @@
 <template>
 	<v-card max-width="900" class="mx-auto rounded-card">
 		<v-flex class="d-flex pa-3">
-			<v-text-field v-model="search" label="חפש בן אדם ספציפי..."></v-text-field>
+			<v-text-field
+				v-model="search"
+				@input="isTyping = true"
+				label="חפש בן אדם ספציפי..."
+			></v-text-field>
 			<v-progress-circular
-				v-if="filteredContacts.length <= 0"
+				v-if="isLoading"
 				indeterminate
 				color="primary"
 			></v-progress-circular>
@@ -13,6 +17,7 @@
 				<contact-row
 					v-for="contact in filteredContacts"
 					:key="contact.title"
+					@erased="loadFilteredContacts"
 					@dblclick.native="showContact(contact)"
 					:contact="contact"
 				></contact-row>
@@ -41,6 +46,8 @@ import { getAllContacts } from '@/queries/getAllContacts.js';
 import ContactRow from '@/components/ContactRow.vue';
 import ContactDetailsModal from '@/components/ContactDetailsModal.vue';
 import EditContactModal from '@/components/EditContactModal.vue';
+import { debounce } from 'debounce';
+
 export default {
 	apollo: {
 		list: getAllContacts
@@ -54,23 +61,13 @@ export default {
 		return {
 			list: [],
 			search: '',
+			filteredContacts: [],
 			showContactInfo: false,
 			showContactEdit: false,
+			isTyping: false,
+			isLoading: true,
 			chosenContact: {}
 		};
-	},
-	computed: {
-		filteredContacts() {
-			const fields = [];
-			const search = this.search;
-			if (this.list[0]) {
-				fields.push(...Object.keys(this.list[0]));
-				return this.list.filter(contact =>
-					fields.some(field => String(contact[field]).includes(search))
-				);
-			}
-			return [];
-		}
 	},
 	methods: {
 		showContact(contact) {
@@ -87,7 +84,41 @@ export default {
 		},
 		finishEdit() {
 			this.showContactEdit = false;
+			this.loadFilteredContacts();
 			Swal.fire('!יש', 'איש הקשר עודכן בהצלחה', 'success');
+		},
+		loadFilteredContacts(searchQuery) {
+			if (this.list[0]) {
+				this.isLoading = true;
+				if (searchQuery) {
+					const list = this.list.filter(contact =>
+						this.doesContactIncludesSearch(contact, searchQuery)
+					);
+					this.filteredContacts = list;
+				} else {
+					this.filteredContacts = this.list;
+				}
+				this.isLoading = false;
+				return;
+			}
+			this.filteredContacts.length = 0;
+		},
+		doesContactIncludesSearch(contact, search) {
+			const dataStr = contact.first_name + ' ' + contact.last_name + ' ' + contact.company;
+			return dataStr.includes(search);
+		}
+	},
+	watch: {
+		search: debounce(function() {
+			this.isTyping = false;
+		}, 800),
+		isTyping: function(value) {
+			if (!value) {
+				this.loadFilteredContacts(this.search);
+			}
+		},
+		list: function() {
+			this.loadFilteredContacts('');
 		}
 	}
 };

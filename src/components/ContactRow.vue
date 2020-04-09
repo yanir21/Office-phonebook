@@ -77,7 +77,7 @@ export default {
 						}
 					});
 					Swal.fire('!יש', 'איש הקשר נמחק בהצלחה', 'success');
-					this.$emit('closeModal');
+					this.$emit('erased');
 				}
 			});
 		}

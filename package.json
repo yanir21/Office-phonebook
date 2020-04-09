@@ -10,6 +10,7 @@
   "dependencies": {
     "@vue/cli": "^4.2.3",
     "core-js": "^3.6.4",
+    "debounce": "^1.2.0",
     "sweetalert2": "^9.10.3",
     "vue": "^2.6.11",
     "vue-apollo": "^3.0.0-beta.11",
