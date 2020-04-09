@@ -2,6 +2,7 @@
 	<v-card max-width="900" class="mx-auto rounded-card">
 		<v-flex class="d-flex pa-3">
 			<v-text-field
+				clearable
 				v-model="search"
 				@input="isTyping = true"
 				label="חפש בן אדם ספציפי..."
