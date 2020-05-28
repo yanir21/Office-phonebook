@@ -80,7 +80,9 @@ export default {
 	},
 	computed: {
 		fullName() {
-			return this.contact.first_name + ' ' + this.contact.last_name;
+			const firstName = this.contact.first_name;
+			const lastName = this.contact.last_name;
+			return lastName ? firstName + ' ' + lastName : firstName;
 		}
 	},
 	methods: {

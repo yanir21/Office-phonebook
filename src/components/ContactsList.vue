@@ -105,7 +105,14 @@ export default {
 			this.filteredContacts.length = 0;
 		},
 		doesContactIncludesSearch(contact, search) {
-			const dataStr = contact.first_name + ' ' + contact.last_name + ' ' + contact.company;
+			const dataStr =
+				contact.first_name +
+				' ' +
+				contact.last_name +
+				' ' +
+				contact.company +
+				' ' +
+				contact.memo;
 			return dataStr.includes(search);
 		}
 	},

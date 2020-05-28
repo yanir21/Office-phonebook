@@ -149,6 +149,7 @@ export default {
 							phones: contact.phones.filter(phone => phone.number)
 						}
 					});
+					this.clearFields();
 					Swal.fire('!יש', 'איש הקשר נוסף בהצלחה', 'success');
 				} catch (err) {
 					console.log(err);
@@ -181,6 +182,13 @@ export default {
 		},
 		isFirst(index) {
 			return index === 0;
+		},
+		clearFields() {
+			this.fullName = '';
+			this.email = '';
+			this.company = '';
+			this.memo = '';
+			this.phones = [{}];
 		},
 		async doesContactExists(name) {
 			let shouldOverride = true;

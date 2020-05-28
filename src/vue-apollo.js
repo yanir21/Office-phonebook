@@ -8,9 +8,10 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 
 const httpEndpoint =
-	process.env.VUE_APP_GRAPHQL_HTTP || 'http://web-phone-book.herokuapp.com/v1/graphql';
+	process.env.VUE_APP_GRAPHQL_HTTP || 'http://web-phonebook-dev.herokuapp.com/v1/graphql';
 
-const wsEndpoint = process.env.VUE_APP_GRAPHQL_WS || 'ws://web-phone-book.herokuapp.com/v1/graphql';
+const wsEndpoint =
+	process.env.VUE_APP_GRAPHQL_WS || 'ws://web-phonebook-dev.herokuapp.com/v1/graphql';
 
 const httpLink = createHttpLink({
 	headers: {
@@ -27,7 +28,7 @@ const wsLink = new WebSocketLink({
 		connectionParams: {
 			headers: {
 				'content-type': 'application/json',
-				'x-hasura-admin-secret': `hbhryn33`
+				'x-hasura-admin-secret': `btamir123456`
 			}
 		}
 	}
@@ -61,12 +62,7 @@ export const apolloProvider = new VueApollo({
 			'background: red; color: white; padding: 2px 4px; border-radius: 3px; font-weight: bold;',
 			error.message
 		);
-		this.$router.push({
-			name: '/serverErrorPage',
-			params: {
-				errorMessage: encodeURIComponent(error.message)
-			}
-		});
+		this.$router.push('/serverErrorPage');
 	}
 });
 
